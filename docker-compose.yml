@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: taskstream-postgres
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=taskstream_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - taskstream_postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: taskstream-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - taskstream_redis_data:/data
+
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    container_name: taskstream-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - taskstream_rabbitmq_data:/var/lib/rabbitmq
+
+  mongo:
+    image: mongo:6.0
+    container_name: taskstream-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - taskstream_mongo_data:/data/db
+
+volumes:
+  taskstream_postgres_data:
+    name: taskstream_postgres_data
+  taskstream_redis_data:
+    name: taskstream_redis_data
+  taskstream_rabbitmq_data:
+    name: taskstream_rabbitmq_data
+  taskstream_mongo_data:
+    name: taskstream_mongo_data

@@ -36,6 +36,14 @@ services:
     volumes:
       - taskstream_mongo_data:/data/db
 
+  adminer:
+    image: adminer
+    container_name: taskstream_adminer_dev
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
 volumes:
   taskstream_postgres_data:
     name: taskstream_postgres_data

@@ -1,0 +1,6 @@
+@TaskStream.ApiGateway_HostAddress = http://localhost:5160
+
+GET {{TaskStream.ApiGateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

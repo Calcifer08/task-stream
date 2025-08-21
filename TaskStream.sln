@@ -3,13 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Users.API", "src\Services\Users\TaskStream.Users.API\TaskStream.Users.API.csproj", "{CD3235AF-82C9-4E1B-B159-8B287437F499}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Shared.Protos", "src\Shared\TaskStream.Shared.Protos\TaskStream.Shared.Protos.csproj", "{51BF2530-4299-41A9-907C-2BBF626C6035}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Users.Application", "src\Services\Users\TaskStream.Users.Application\TaskStream.Users.Application.csproj", "{3967BCAE-2410-4687-B1FA-F1FFBCCB6491}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.ApiGateway", "src\Gateways\TaskStream.ApiGateway\TaskStream.ApiGateway.csproj", "{9CF5B214-222B-42D9-8904-202AA7E44968}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Users.Domain", "src\Services\Users\TaskStream.Users.Domain\TaskStream.Users.Domain.csproj", "{E265E222-009D-40EA-8D9E-54F40AA89726}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Auth.Domain", "src\Services\Auth\TaskStream.Auth.Domain\TaskStream.Auth.Domain.csproj", "{7E513966-5BA2-1E0A-C425-22A6B6772C0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Users.Infrastructure", "src\Services\Users\TaskStream.Users.Infrastructure\TaskStream.Users.Infrastructure.csproj", "{EA016DA3-066F-462B-85A0-578E40CA288F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Auth.Application", "src\Services\Auth\TaskStream.Auth.Application\TaskStream.Auth.Application.csproj", "{650968B8-07FE-2482-8BE1-AD654017280E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Auth.Infrastructure", "src\Services\Auth\TaskStream.Auth.Infrastructure\TaskStream.Auth.Infrastructure.csproj", "{8AD7F0E7-07AE-78F6-1154-7D66E0FE1504}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Auth.API", "src\Services\Auth\TaskStream.Auth.API\TaskStream.Auth.API.csproj", "{8A030E61-8FAC-08D6-D224-B7C81ED32F98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,22 +21,30 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CD3235AF-82C9-4E1B-B159-8B287437F499}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD3235AF-82C9-4E1B-B159-8B287437F499}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD3235AF-82C9-4E1B-B159-8B287437F499}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD3235AF-82C9-4E1B-B159-8B287437F499}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3967BCAE-2410-4687-B1FA-F1FFBCCB6491}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3967BCAE-2410-4687-B1FA-F1FFBCCB6491}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3967BCAE-2410-4687-B1FA-F1FFBCCB6491}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3967BCAE-2410-4687-B1FA-F1FFBCCB6491}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E265E222-009D-40EA-8D9E-54F40AA89726}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E265E222-009D-40EA-8D9E-54F40AA89726}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E265E222-009D-40EA-8D9E-54F40AA89726}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E265E222-009D-40EA-8D9E-54F40AA89726}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EA016DA3-066F-462B-85A0-578E40CA288F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EA016DA3-066F-462B-85A0-578E40CA288F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EA016DA3-066F-462B-85A0-578E40CA288F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA016DA3-066F-462B-85A0-578E40CA288F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51BF2530-4299-41A9-907C-2BBF626C6035}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51BF2530-4299-41A9-907C-2BBF626C6035}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51BF2530-4299-41A9-907C-2BBF626C6035}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51BF2530-4299-41A9-907C-2BBF626C6035}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CF5B214-222B-42D9-8904-202AA7E44968}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CF5B214-222B-42D9-8904-202AA7E44968}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CF5B214-222B-42D9-8904-202AA7E44968}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CF5B214-222B-42D9-8904-202AA7E44968}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E513966-5BA2-1E0A-C425-22A6B6772C0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E513966-5BA2-1E0A-C425-22A6B6772C0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E513966-5BA2-1E0A-C425-22A6B6772C0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E513966-5BA2-1E0A-C425-22A6B6772C0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{650968B8-07FE-2482-8BE1-AD654017280E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{650968B8-07FE-2482-8BE1-AD654017280E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{650968B8-07FE-2482-8BE1-AD654017280E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{650968B8-07FE-2482-8BE1-AD654017280E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AD7F0E7-07AE-78F6-1154-7D66E0FE1504}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AD7F0E7-07AE-78F6-1154-7D66E0FE1504}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AD7F0E7-07AE-78F6-1154-7D66E0FE1504}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AD7F0E7-07AE-78F6-1154-7D66E0FE1504}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A030E61-8FAC-08D6-D224-B7C81ED32F98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A030E61-8FAC-08D6-D224-B7C81ED32F98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A030E61-8FAC-08D6-D224-B7C81ED32F98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A030E61-8FAC-08D6-D224-B7C81ED32F98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

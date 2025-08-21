@@ -1,0 +1,59 @@
+@host = https://localhost:7168
+
+ Переменные для хранения токенов. Мы будем заполнять их вручную после логина.
+@accessToken = 
+@refreshToken = 
+
+# Переменная для ID пользователя. Тоже заполняется вручную.
+# Как узнать ID? После регистрации посмотрите в таблицу AspNetUsers в вашей БД.
+@userId = 
+
+
+###
+# 1. Регистрация нового gRPC пользователя
+# Ожидаемый ответ: Успех, с токенами
+
+GRPC {{host}}/auth.AuthService/Register
+Content-Type: application/json
+
+{
+  "email": "grpc.user2@example.com",
+  "password": "Password123!"
+}
+
+
+###
+# 2. Вход в систему
+# Ожидаемый ответ: Успех, с токенами
+# ---> ПОСЛЕ ВЫПОЛНЕНИЯ: Скопируйте токены в переменные @accessToken и @refreshToken выше <---
+GRPC {{host}}/auth.AuthService/Login
+Content-Type: application/json
+
+{
+  "email": "grpc.user2@example.com",
+  "password": "Password123!"
+}
+
+
+###
+# 3. Обновление токенов
+# Ожидаемый ответ: Успех, с НОВОЙ парой токенов
+# ВАЖНО: Убедитесь, что переменные @accessToken и @refreshToken заполнены!
+GRPC {{host}}/auth.AuthService/Refresh
+Content-Type: application/json
+
+{
+  "access_token": "{{accessToken}}",
+  "refresh_token": "{{refreshToken}}"
+}
+
+
+###
+# 4. Выход из системы
+# Ожидаемый ответ: Успех
+# ВАЖНО: Убедитесь, что переменная @userId заполнена!
+GRPC {{host}}/auth.AuthService/Logout
+x-user-id: {{userId}}
+
+{
+}

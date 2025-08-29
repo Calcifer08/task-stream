@@ -15,6 +15,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Auth.Infrastruct
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Auth.API", "src\Services\Auth\TaskStream.Auth.API\TaskStream.Auth.API.csproj", "{8A030E61-8FAC-08D6-D224-B7C81ED32F98}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Tasks.Domain", "src\Services\Tasks\TaskStream.Tasks.Domain\TaskStream.Tasks.Domain.csproj", "{B2745C19-BAA6-4FBB-9A79-E568F0F38740}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Tasks.Application", "src\Services\Tasks\TaskStream.Tasks.Application\TaskStream.Tasks.Application.csproj", "{FA1071D0-DFD8-49DE-885C-0090A490A790}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Tasks.Infrastructure", "src\Services\Tasks\TaskStream.Tasks.Infrastructure\TaskStream.Tasks.Infrastructure.csproj", "{5986B047-82D2-41DA-A48D-2DC9D0ABBA6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Tasks.API", "src\Services\Tasks\TaskStream.Tasks.API\TaskStream.Tasks.API.csproj", "{94325B25-0389-4430-9270-7246F5EF9FF4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +53,22 @@ Global
 		{8A030E61-8FAC-08D6-D224-B7C81ED32F98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A030E61-8FAC-08D6-D224-B7C81ED32F98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A030E61-8FAC-08D6-D224-B7C81ED32F98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2745C19-BAA6-4FBB-9A79-E568F0F38740}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2745C19-BAA6-4FBB-9A79-E568F0F38740}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2745C19-BAA6-4FBB-9A79-E568F0F38740}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2745C19-BAA6-4FBB-9A79-E568F0F38740}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA1071D0-DFD8-49DE-885C-0090A490A790}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA1071D0-DFD8-49DE-885C-0090A490A790}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA1071D0-DFD8-49DE-885C-0090A490A790}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA1071D0-DFD8-49DE-885C-0090A490A790}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5986B047-82D2-41DA-A48D-2DC9D0ABBA6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5986B047-82D2-41DA-A48D-2DC9D0ABBA6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5986B047-82D2-41DA-A48D-2DC9D0ABBA6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5986B047-82D2-41DA-A48D-2DC9D0ABBA6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94325B25-0389-4430-9270-7246F5EF9FF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94325B25-0389-4430-9270-7246F5EF9FF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94325B25-0389-4430-9270-7246F5EF9FF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94325B25-0389-4430-9270-7246F5EF9FF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

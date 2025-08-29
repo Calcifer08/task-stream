@@ -27,6 +27,9 @@
     <Protobuf Include="..\..\Shared\TaskStream.Shared.Protos\Protos\auth.proto" GrpcServices="Client">
       <Link>auth.proto</Link>
     </Protobuf>
+    <Protobuf Include="..\..\Shared\TaskStream.Shared.Protos\Protos\tasks.proto" GrpcServices="Client">
+      <Link>tasks.proto</Link>
+    </Protobuf>
   </ItemGroup>
 
 </Project>

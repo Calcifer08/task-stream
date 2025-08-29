@@ -1,0 +1,151 @@
+# @host = http://localhost:5292
+@host = https://localhost:7036
+# Имитируем ID пользователя, который пришел бы от ApiGateway.
+# Можете использовать любой валидный GUID.
+@userId = a1b2c3d4-e5f6-7890-1234-567890abcdef
+
+# Переменные для хранения ID, которые мы получим в ответах
+@projectId =
+@taskId =
+
+
+# =================================================================
+# 1. СЦЕНАРИИ ДЛЯ ПРОЕКТОВ
+# =================================================================
+
+###
+# 1.1: Создание нового проекта
+# Ожидаемый ответ: 200 OK, с данными созданного проекта
+# ---> ПОСЛЕ ВЫПОЛНЕНИЯ: Скопируйте ID проекта в переменную @projectId выше <---
+GRPC {{host}}/tasks.TasksService/CreateProject
+# Метаданные - имитируем авторизованного пользователя
+x-user-id: {{userId}}
+Content-Type: application/json
+
+{
+  "title": "Ремонт в квартире"
+}
+
+
+###
+# 1.2: Получение списка всех проектов пользователя
+# Ожидаемый ответ: 200 OK, со списком проектов
+GRPC {{host}}/tasks.TasksService/GetProjects
+x-user-id: {{userId}}
+Content-Type: application/json
+
+{}
+
+
+###
+# 1.3: Получение одного проекта по ID
+# Ожидаемый ответ: 200 OK, с данными проекта
+# ВАЖНО: Убедитесь, что переменная @projectId заполнена!
+GRPC {{host}}/tasks.TasksService/GetProjectById
+x-user-id: {{userId}}
+Content-Type: application/json
+
+{
+  "project_id": "{{projectId}}"
+}
+
+
+###
+# 1.4: Обновление проекта
+# Ожидаемый ответ: 200 OK, с обновленными данными проекта
+# ВАЖНО: Убедитесь, что переменная @projectId заполнена!
+GRPC {{host}}/tasks.TasksService/UpdateProject
+x-user-id: {{userId}}
+Content-Type: application/json
+
+{
+  "project_id": "{{projectId}}",
+  "new_title": "Ремонт в квартире (Обновлено)"
+}
+
+###
+# 1.5: Удаление проекта (удалит и все оставшиеся задачи в нем)
+# Ожидаемый ответ: 200 OK
+# ВАЖНО: Убедитесь, что переменная @projectId заполнена!
+GRPC {{host}}/tasks.TasksService/DeleteProject
+x-user-id: {{userId}}
+Content-Type: application/json
+
+{
+  "project_id": "{{projectId}}"
+}
+
+# =================================================================
+# 2. СЦЕНАРИИ ДЛЯ ЗАДАЧ
+# =================================================================
+
+###
+# 2.1: Создание новой задачи в проекте
+# Ожидаемый ответ: 200 OK, с данными созданной задачи
+# ВАЖНО: Убедитесь, что переменная @projectId заполнена!
+# ---> ПОСЛЕ ВЫПОЛНЕНИЯ: Скопируйте ID задачи в переменную @taskId выше <---
+GRPC {{host}}/tasks.TasksService/CreateTask
+x-user-id: {{userId}}
+Content-Type: application/json
+
+{
+  "project_id": "{{projectId}}",
+  "title": "Купить краску и валики",
+  "description": { "value": "Белая, матовая, для стен, 5 литров. И два валика." },
+  "due_date": "2025-09-15T10:00:00Z"
+}
+
+
+###
+# 2.2: Получение списка всех задач в проекте
+# Ожидаемый ответ: 200 OK, со списком задач
+# ВАЖНО: Убедитесь, что переменная @projectId заполнена!
+GRPC {{host}}/tasks.TasksService/GetTasksInProject
+x-user-id: {{userId}}
+Content-Type: application/json
+
+{
+  "project_id": "{{projectId}}"
+}
+
+
+###
+# 2.3: Получение одной задачи по ID
+# Ожидаемый ответ: 200 OK, с данными задачи
+# ВАЖНО: Убедитесь, что переменная @taskId заполнена!
+GRPC {{host}}/tasks.TasksService/GetTaskById
+x-user-id: {{userId}}
+Content-Type: application/json
+
+{
+  "task_id": "{{taskId}}"
+}
+
+
+###
+# 2.4: Частичное обновление задачи (меняем только статус и описание)
+# Ожидаемый ответ: 200 OK, с обновленными данными задачи
+# ВАЖНО: Убедитесь, что переменная @taskId заполнена!
+GRPC {{host}}/tasks.TasksService/UpdateTask
+x-user-id: {{userId}}
+Content-Type: application/json
+
+{
+  "task_id": "{{taskId}}",
+  "status": "IN_PROGRESS",
+  "description": { "value": "Белая, матовая, для стен, 5 литров" }
+}
+
+###
+# 1.5: Удаление задачи
+# Ожидаемый ответ: 200 OK
+# ВАЖНО: Убедитесь, что переменная @taskId заполнена!
+GRPC {{host}}/tasks.TasksService/DeleteTask
+x-user-id: {{userId}}
+Content-Type: application/json
+
+{
+  "task_id": "{{taskId}}"
+}
+
+

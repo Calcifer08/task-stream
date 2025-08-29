@@ -1,10 +1,12 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TaskStream.ApiGateway.Extensions;
 using TaskStream.ApiGateway.Swagger;
 using TaskStream.Shared.Protos.Auth;
+using TaskStream.Shared.Protos.Tasks;
 
 namespace TaskStream.ApiGateway
 {
@@ -37,11 +39,20 @@ namespace TaskStream.ApiGateway
       builder.Services.AddAuthorization();
 
       builder.Services.AddGrpcClient<AuthService.AuthServiceClient>(options =>
+      {
+        options.Address = new Uri(builder.Configuration["GrpcServices:UsersApi"]!);
+      });
+      builder.Services.AddGrpcClient<TasksService.TasksServiceClient>(options =>
+      {
+        options.Address = new Uri(builder.Configuration["GrpcServices:TasksApi"]!);
+      });
+
+      builder.Services.AddControllers()
+        .AddJsonOptions(options =>
         {
-          options.Address = new Uri(builder.Configuration["GrpcServices:UsersApi"]!);
+          options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
 
-      builder.Services.AddControllers();
       builder.Services.AddEndpointsApiExplorer();
       builder.Services.AddSwaggerGen(options =>
       {
@@ -61,11 +72,11 @@ namespace TaskStream.ApiGateway
       builder.Services.AddCors(options =>
       {
         options.AddDefaultPolicy(policy =>
-              {
-                policy.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
-              });
+          {
+            policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+          });
       });
 
       builder.Services.AddAutoMapper(cfg => { }, typeof(Program));

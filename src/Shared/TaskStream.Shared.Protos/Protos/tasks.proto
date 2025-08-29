@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "TaskStream.Shared.Protos.Tasks";
+
+package tasks;
+
+service TasksService {
+  rpc CreateProject (CreateProjectRequest) returns (ProjectResponse);
+  rpc GetProjects (GetProjectsRequest) returns (GetProjectsResponse);
+  rpc GetProjectById (GetProjectByIdRequest) returns (ProjectResponse);
+  rpc UpdateProject (UpdateProjectRequest) returns (ProjectResponse);
+  rpc DeleteProject (DeleteProjectRequest) returns (DeleteProjectResponse);
+  
+  rpc CreateTask (CreateTaskRequest) returns (TaskItemResponse);
+  rpc GetTasksInProject (GetTasksInProjectRequest) returns (GetTasksInProjectResponse);
+  rpc GetTaskById (GetTaskByIdRequest) returns (TaskItemResponse);
+  rpc UpdateTask (UpdateTaskRequest) returns (TaskItemResponse);
+  rpc DeleteTask (DeleteTaskRequest) returns (DeleteTaskResponse);
+}
+
+message CreateProjectRequest {
+  string title = 1;
+  optional string description = 2;
+}
+
+message GetProjectsRequest {
+}
+
+message GetProjectByIdRequest {
+  string project_id = 1;
+}
+
+message UpdateProjectRequest {
+  string project_id = 1;
+  optional string new_title = 2;
+  optional string new_description = 3;
+}
+
+message DeleteProjectRequest {
+  string project_id = 1;
+}
+
+message ProjectResponse {
+  string id = 1;
+  string title = 2;
+  optional string description = 3;
+}
+
+message GetProjectsResponse {
+  repeated ProjectResponse projects = 1;
+}
+
+message DeleteProjectResponse {
+  bool succeeded = 1;
+}
+
+enum TaskStatus {
+  TO_DO = 0;
+  IN_PROGRESS = 1;
+  DONE = 2;
+}
+
+message CreateTaskRequest {
+  string project_id = 1;
+  string title = 2;
+  optional string description = 3;
+  optional google.protobuf.Timestamp due_date = 4;
+}
+
+message GetTasksInProjectRequest {
+  string project_id = 1;
+}
+
+message GetTaskByIdRequest {
+  string task_id = 1;
+}
+
+message UpdateTaskRequest {
+  string task_id = 1;
+  optional string title = 2;
+  optional string description = 3;
+  optional TaskStatus status = 4;
+  optional google.protobuf.Timestamp due_date = 5;
+}
+
+message DeleteTaskRequest {
+  string task_id = 1;
+}
+
+message TaskItemResponse {
+  string id = 1;
+  string title = 2;
+  optional string description = 3;
+  TaskStatus status = 4;
+  optional google.protobuf.Timestamp due_date = 5;
+  string project_id = 6;
+}
+
+message GetTasksInProjectResponse {
+  repeated TaskItemResponse tasks = 1;
+}
+
+message DeleteTaskResponse {
+  bool succeeded = 1;
+}

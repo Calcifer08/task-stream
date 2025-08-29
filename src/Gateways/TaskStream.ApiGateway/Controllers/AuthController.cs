@@ -24,53 +24,64 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterRequest request)
+    public async Task<IActionResult> RegisterAsync(RegisterRequest request)
     {
         _logger.LogInformation("Регистрация пользователя {Email} через Гетвей", request.Email);
-        var grpcRequest = _mapper.Map<GrpcContracts.RegisterRequest>(request);
-        var result = await _authClient.RegisterAsync(grpcRequest);
-
-        if (!result.Succeeded)
+        try
         {
-            return BadRequest(new { Errors = result.Errors.ToList() });
+            var grpcRequest = _mapper.Map<GrpcContracts.RegisterRequest>(request);
+            var result = await _authClient.RegisterAsync(grpcRequest);
+            return Ok(_mapper.Map<AuthSuccessResponse>(result));
         }
-
-        return Ok(_mapper.Map<AuthSuccessResponse>(result));
+        catch (RpcException ex)
+        {
+            return HandleRpcException(ex);
+        }
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginRequest request)
+    public async Task<IActionResult> LoginAsync(LoginRequest request)
     {
         _logger.LogInformation("Вход пользователя {Email} через Гетвей", request.Email);
-        var grpcRequest = _mapper.Map<GrpcContracts.LoginRequest>(request);
-        var result = await _authClient.LoginAsync(grpcRequest);
 
-        if (!result.Succeeded)
+        try
         {
-            return Unauthorized(new { Errors = result.Errors.ToList() });
+            var grpcRequest = _mapper.Map<GrpcContracts.LoginRequest>(request);
+            var result = await _authClient.LoginAsync(grpcRequest);
+            return Ok(_mapper.Map<AuthSuccessResponse>(result));
         }
-
-        return Ok(_mapper.Map<AuthSuccessResponse>(result));
+        catch (RpcException ex)
+        {
+            return HandleRpcException(ex);
+        }
     }
 
     [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh(TokenRefreshRequest request)
+    public async Task<IActionResult> RefreshAsync(TokenRefreshRequest request)
     {
         _logger.LogInformation("Обновление токенов через Гетвей");
-        var grpcRequest = _mapper.Map<GrpcContracts.RefreshRequest>(request);
-        var result = await _authClient.RefreshAsync(grpcRequest);
 
-        if (!result.Succeeded)
+        try
         {
-            return BadRequest(new { Errors = result.Errors.ToList() });
-        }
+            var grpcRequest = _mapper.Map<GrpcContracts.RefreshRequest>(request);
+            var result = await _authClient.RefreshAsync(grpcRequest);
 
-        return Ok(_mapper.Map<AuthSuccessResponse>(result));
+            if (!result.Succeeded)
+            {
+                return BadRequest(new { Errors = result.Errors.ToList() });
+            }
+
+            return Ok(_mapper.Map<AuthSuccessResponse>(result));
+        }
+        catch (RpcException ex)
+        {
+            return HandleRpcException(ex);
+        }
     }
 
     [Authorize]
     [HttpPost("logout")]
-    public async Task<IActionResult> Logout()
+    public async Task<IActionResult> LogoutAsync()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId is null)
@@ -83,13 +94,37 @@ public class AuthController : ControllerBase
         var grpcRequest = new GrpcContracts.LogoutRequest();
         var metadata = new Metadata { { "x-user-id", userId } };
 
-        var result = await _authClient.LogoutAsync(grpcRequest, metadata);
-
-        if (!result.Succeeded)
+        try
         {
-            return StatusCode(500, "Ошибка выхода на сервере");
-        }
+            var result = await _authClient.LogoutAsync(grpcRequest, metadata);
 
-        return Ok();
+            if (!result.Succeeded)
+            {
+                return StatusCode(500, "Ошибка выхода на сервере");
+            }
+
+            return Ok();
+        }
+        catch (RpcException ex)
+        {
+            return HandleRpcException(ex);
+        }
+    }
+
+    private IActionResult HandleRpcException(RpcException ex)
+    {
+        switch (ex.StatusCode)
+        {
+            case Grpc.Core.StatusCode.InvalidArgument:
+                return BadRequest(new { Error = "Некорректные данные в запросе.", Details = ex.Status.Detail });
+            case Grpc.Core.StatusCode.NotFound:
+                return NotFound(new { Error = "Ресурс не найден.", Details = ex.Status.Detail });
+            case Grpc.Core.StatusCode.Unauthenticated:
+                return Unauthorized(new { Error = "Ошибка аутентификации.", Details = ex.Status.Detail });
+            case Grpc.Core.StatusCode.PermissionDenied:
+                return Forbid();
+            default:
+                return StatusCode(500, new { Error = "Произошла внутренняя ошибка сервера.", Details = ex.Status.Detail });
+        }
     }
 }

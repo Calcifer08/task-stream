@@ -30,13 +30,15 @@ public class AuthGrpcService : AuthService.AuthServiceBase
         var validationResult = await _registerValidator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
-            var errorResponse = new AuthResponse { Succeeded = false };
-            errorResponse.Errors.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            _logger.LogWarning("Ошибка проверки данных при регистрации {Email}: {Errors}", request.Email, string.Join(", ", errorResponse.Errors));
-            return errorResponse;
+            throw new RpcException(new Status(StatusCode.InvalidArgument, validationResult.ToString()));
         }
 
         var result = await _authService.RegisterAsync(dto);
+        if (!result.Succeeded)
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, string.Join(", ", result.Errors!)));
+        }
+
         return _mapper.Map<AuthResponse>(result);
     }
 
@@ -45,14 +47,24 @@ public class AuthGrpcService : AuthService.AuthServiceBase
         _logger.LogInformation("Запрос на вход по gRPC для {Email}", request.Email);
         var dto = _mapper.Map<LoginDto>(request);
         var result = await _authService.LoginAsync(dto);
+
+        if (!result.Succeeded)
+        {
+            throw new RpcException(new Status(StatusCode.Unauthenticated, "Неверные учетные данные."));
+        }
         return _mapper.Map<AuthResponse>(result);
     }
 
     public override async Task<AuthResponse> Refresh(RefreshRequest request, ServerCallContext context)
     {
-        _logger.LogInformation("Запрос на обновление токена обнволения по gRPC");
+        _logger.LogInformation("Запрос на обновление токена обновления по gRPC");
         var dto = _mapper.Map<RefreshTokenDto>(request);
         var result = await _authService.RefreshTokenAsync(dto);
+        if (!result.Succeeded)
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, string.Join(", ", result.Errors!)));
+        }
+
         return _mapper.Map<AuthResponse>(result);
     }
 
@@ -68,7 +80,11 @@ public class AuthGrpcService : AuthService.AuthServiceBase
 
         _logger.LogInformation("Запрос на выход по gRPC для User {UserId}", userId);
 
-        await _authService.LogoutAsync(userId);
+        var succeeded = await _authService.LogoutAsync(userId);
+        if (!succeeded)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, "Не удалось выполнить выход из системы."));
+        }
 
         return new LogoutResponse { Succeeded = true };
     }

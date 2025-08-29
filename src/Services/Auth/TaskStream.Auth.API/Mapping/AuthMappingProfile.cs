@@ -8,12 +8,12 @@ public class AuthMappingProfile : Profile
 {
     public AuthMappingProfile()
     {
-        // gRPC -> REST
+        // gRPC -> DTO
         CreateMap<RegisterRequest, RegisterDto>();
         CreateMap<LoginRequest, LoginDto>();
         CreateMap<RefreshRequest, RefreshTokenDto>();
 
-        // REST -> gRPC
+        // DTO -> gRPC
         CreateMap<AuthResultDto, AuthResponse>();
     }
 }

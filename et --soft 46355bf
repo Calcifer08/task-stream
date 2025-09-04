@@ -1,0 +1,6 @@
+[33m98c3a1f[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m DELETEALL
+[33m418b91c[m DELETE
+[33m46355bf[m[33m ([m[1;31morigin/main[m[33m)[m Add Tasks microservice
+[33m3a9d772[m Fix Auth error message
+[33m4f28ecf[m Add Gateway and refactor Auth to gRPC
+[33mbd256af[m Add auth

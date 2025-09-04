@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\TaskStream.Shared.Messaging\TaskStream.Shared.Messaging.csproj" />
     <ProjectReference Include="..\TaskStream.Tasks.Application\TaskStream.Tasks.Application.csproj" />
   </ItemGroup>
 

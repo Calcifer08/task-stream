@@ -1,8 +1,8 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using TaskStream.Auth.Application.DTOs;
+using TaskStream.Auth.Application.Interfaces.Publishers;
 using TaskStream.Auth.Application.Interfaces.Security;
 using TaskStream.Auth.Application.Interfaces.Services;
 using TaskStream.Auth.Domain.Entities;
@@ -15,17 +15,20 @@ public class AuthService : IAuthService
   private readonly ITokenService _tokenService;
   private readonly IDatabase _redisDb;
   private readonly ILogger<AuthService> _logger;
+  private readonly IAuthEventPublisher _eventPublisher;
 
   public AuthService(
       UserManager<ApplicationUser> userManager,
       ITokenService tokenService,
       IConnectionMultiplexer redis,
-      ILogger<AuthService> logger)
+      ILogger<AuthService> logger,
+      IAuthEventPublisher eventPublisher)
   {
     _userManager = userManager;
     _tokenService = tokenService;
     _redisDb = redis.GetDatabase();
     _logger = logger;
+    _eventPublisher = eventPublisher;
   }
 
   public async Task<AuthResultDto> RegisterAsync(RegisterDto registerDto)
@@ -36,6 +39,15 @@ public class AuthService : IAuthService
     if (!result.Succeeded)
     {
       return new AuthResultDto(false, Errors: result.Errors.Select(e => e.Description));
+    }
+
+    try
+    {
+      _eventPublisher.PublishUserRegistered(user);
+    }
+    catch (Exception ex)
+    {
+      _logger.LogError(ex, "Не удалось опубликовать событие UserRegistered для пользователя {UserId}", user.Id);
     }
 
     return await LoginAsync(new LoginDto(registerDto.Email, registerDto.Password));

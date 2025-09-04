@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Tasks.Infrastruc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Tasks.API", "src\Services\Tasks\TaskStream.Tasks.API\TaskStream.Tasks.API.csproj", "{94325B25-0389-4430-9270-7246F5EF9FF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Shared.Messaging", "src\Shared\TaskStream.Shared.Messaging\TaskStream.Shared.Messaging.csproj", "{4C171CDA-9A0D-4F8F-AACD-530554DF056A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskStream.Logging.Worker", "src\BackgroundJobs\Logging\TaskStream.Logging.Worker\TaskStream.Logging.Worker.csproj", "{F79BFD48-AB46-494F-ABC6-CF80E3477A25}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +73,14 @@ Global
 		{94325B25-0389-4430-9270-7246F5EF9FF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94325B25-0389-4430-9270-7246F5EF9FF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94325B25-0389-4430-9270-7246F5EF9FF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C171CDA-9A0D-4F8F-AACD-530554DF056A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C171CDA-9A0D-4F8F-AACD-530554DF056A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C171CDA-9A0D-4F8F-AACD-530554DF056A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C171CDA-9A0D-4F8F-AACD-530554DF056A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F79BFD48-AB46-494F-ABC6-CF80E3477A25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F79BFD48-AB46-494F-ABC6-CF80E3477A25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F79BFD48-AB46-494F-ABC6-CF80E3477A25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F79BFD48-AB46-494F-ABC6-CF80E3477A25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

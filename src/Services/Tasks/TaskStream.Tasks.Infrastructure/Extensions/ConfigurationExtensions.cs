@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Configuration;
+
 namespace TaskStream.Tasks.API.Extensions;
 
 public static class ConfigurationExtensions

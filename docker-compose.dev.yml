@@ -1,0 +1,167 @@
+version: "3.8"
+name: taskstream-dev
+
+services:
+  # infrastructure
+  postgres:
+    image: postgres:15
+    container_name: taskstream-postgres_prod
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - taskstream_postgres_data_prod:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    container_name: taskstream-redis_prod
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - taskstream_redis_data_prod:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    container_name: taskstream-rabbitmq_prod
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - taskstream_rabbitmq_data_prod:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongo:
+    image: mongo:6.0
+    container_name: taskstream-mongo_prod
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - taskstream_mongo_data_prod:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer
+    container_name: taskstream_adminer_dev_prod
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+  nginx:
+    image: nginx:latest
+    container_name: taskstream-nginx_prod
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - api-gateway
+
+  # services
+  auth-api:
+    container_name: taskstream-auth-api_prod
+    build:
+      context: .
+      dockerfile: src/Services/Auth/TaskStream.Auth.API/Dockerfile
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__Postgres=Host=postgres;Port=5432;Database=taskstream_db;Username=admin;Password=secret
+      - ConnectionStrings__Redis=redis
+      - RabbitMQ__Host=rabbitmq
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  tasks-api:
+    container_name: taskstream-tasks-api_prod
+    build:
+      context: .
+      dockerfile: src/Services/Tasks/TaskStream.Tasks.API/Dockerfile
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__Postgres=Host=postgres;Port=5432;Database=taskstream_tasks_db;Username=admin;Password=secret
+      - RabbitMQ__Host=rabbitmq
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  logging-worker:
+    container_name: taskstream-logging-worker_prod
+    build:
+      context: .
+      dockerfile: src/BackgroundJobs/Logging/TaskStream.Logging.Worker/Dockerfile
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - RabbitMQ__Host=rabbitmq
+      - MongoDb__ConnectionString=mongodb://mongo:27017
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+
+  api-gateway:
+    container_name: taskstream-api-gateway_prod
+    build:
+      context: .
+      dockerfile: src/Gateways/TaskStream.ApiGateway/Dockerfile
+    restart: unless-stopped
+    # ports:
+    #   - "7001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - GrpcServices__AuthApi=http://auth-api:80
+      - GrpcServices__TasksApi=http://tasks-api:80
+      - Swagger__Enabled=true
+    depends_on:
+      - auth-api
+      - tasks-api
+
+volumes:
+  taskstream_postgres_data_prod:
+    name: taskstream_postgres_data_prod
+  taskstream_redis_data_prod:
+    name: taskstream_redis_data_prod
+  taskstream_rabbitmq_data_prod:
+    name: taskstream_rabbitmq_data_prod
+  taskstream_mongo_data_prod:
+    name: taskstream_mongo_data_prod

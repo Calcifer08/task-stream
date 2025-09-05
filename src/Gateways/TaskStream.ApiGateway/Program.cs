@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TaskStream.ApiGateway.Extensions;
@@ -14,6 +15,8 @@ namespace TaskStream.ApiGateway
   {
     public static void Main(string[] args)
     {
+      // AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
       var builder = WebApplication.CreateBuilder(args);
 
       builder.Services.AddAuthentication(options =>
@@ -40,7 +43,7 @@ namespace TaskStream.ApiGateway
 
       builder.Services.AddGrpcClient<AuthService.AuthServiceClient>(options =>
       {
-        options.Address = new Uri(builder.Configuration["GrpcServices:UsersApi"]!);
+        options.Address = new Uri(builder.Configuration["GrpcServices:AuthApi"]!);
       });
       builder.Services.AddGrpcClient<TasksService.TasksServiceClient>(options =>
       {
@@ -83,16 +86,37 @@ namespace TaskStream.ApiGateway
 
       var app = builder.Build();
 
-      if (app.Environment.IsDevelopment())
+      var isRunningInContainer = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+
+      if (isRunningInContainer)
+      {
+        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        {
+          ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+        });
+      }
+
+      if (app.Configuration.GetValue<bool>("Swagger:Enabled"))
       {
         app.UseSwagger();
         app.UseSwaggerUI();
       }
 
-      app.UseHttpsRedirection();
+      if (!isRunningInContainer)
+      {
+        app.UseHttpsRedirection();
+      }
+
       app.UseCors();
       app.UseAuthentication();
       app.UseAuthorization();
+
+      app.MapGet("/", context =>
+      {
+        context.Response.Redirect("/swagger");
+        return Task.CompletedTask;
+      });
+
       app.MapControllers();
 
       app.Run();

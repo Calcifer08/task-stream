@@ -1,0 +1,58 @@
+version: "3.8"
+name: taskstream-infra
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: taskstream-postgres-infra
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=taskstream_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - taskstream_postgres_data_infra:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: taskstream-redis-infra
+    ports:
+      - "6379:6379"
+    volumes:
+      - taskstream_redis_data_infra:/data
+
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    container_name: taskstream-rabbitmq-infra
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - taskstream_rabbitmq_data_infra:/var/lib/rabbitmq
+
+  mongo:
+    image: mongo:6.0
+    container_name: taskstream-mongo-infra
+    ports:
+      - "27017:27017"
+    volumes:
+      - taskstream_mongo_data_infra:/data/db
+
+  adminer:
+    image: adminer
+    container_name: taskstream_adminer-infra
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  taskstream_postgres_data_infra:
+    name: taskstream_postgres_data_infra
+  taskstream_redis_data_infra:
+    name: taskstream_redis_data_infra
+  taskstream_rabbitmq_data_infra:
+    name: taskstream_rabbitmq_data_infra
+  taskstream_mongo_data_infra:
+    name: taskstream_mongo_data_infra

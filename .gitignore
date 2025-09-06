@@ -43,6 +43,7 @@ secrets.json
 appsettings.Development.json
 .env
 *.pem
+certs/*
 
 # Прочее
 *.log
